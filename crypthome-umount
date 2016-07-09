@@ -1,0 +1,23 @@
+#!/bin/sh
+##
+## Linux-CryptHome: Mount an encrypted user's home directory at login
+## Copyright (c) 2016 SATOH Fumiyasu @ OSS Technology Corp., Japan
+##
+## License: GNU Genera Public Licsense version 3
+##
+
+set -u
+export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
+
+uid="$1"
+
+pwent=$(getent passwd "$uid") || exit $?
+home=$(echo "$pwent" |sed 's/^.*:\([^:]*\):[^:]*$/\1/')
+device=$(awk -v home="$home" '$2==home {print $1}' /proc/mounts)
+[ -n "$home" ] && [ -n "$device" ] || exit $?
+
+umount "$home" || exit $?
+cryptsetup close "$device" || exit $?
+
+exit 0
+

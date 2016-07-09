@@ -1,0 +1,18 @@
+#!/bin/sh
+##
+## Linux-CryptHome: Mount an encrypted user's home directory at login
+## Copyright (c) 2016 SATOH Fumiyasu @ OSS Technology Corp., Japan
+##
+## License: GNU Genera Public Licsense version 3
+##
+
+set -u
+export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
+
+uid=$(id -u "$PAM_USER") || exit $?
+
+keyctl padd user "user:$uid" @u || exit $?
+systemctl start "crypthome@$uid.service" || exit $?
+
+exit 0
+

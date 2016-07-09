@@ -1,0 +1,20 @@
+[Unit]
+Description=Encrypted Home Directory for %I
+DefaultDependencies=no
+Conflicts=umount.target
+IgnoreOnIsolate=true
+Before=user@%i.service
+Requires=user@%i.service
+Before=umount.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutSec=0
+ExecStart=/usr/local/sbin/crypthome-mount %i
+ExecStop=/usr/local/sbin/crypthome-umount %i
+
+[Install]
+RequiredBy=user@%i.service
+
+## vim:filetype=systemd
