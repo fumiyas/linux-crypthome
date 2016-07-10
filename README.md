@@ -10,7 +10,7 @@ What's this?
 ----------------------------------------------------------------------
 
   * At user login:
-    * Add a login password to a keyring.
+    * Save an entered valid login password to a keyring.
     * Open a LUKS encrypted volume for the user with the password
       in the keyring.
     * Revoke the password in the keyring.
