@@ -9,6 +9,10 @@
 set -u
 export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
 
+if [ x"$(id -u)" != x"0" ]; then
+  exit 0
+fi
+
 uid=$(id -u "$PAM_USER") || exit $?
 
 keyctl padd user "user:$uid" @u || exit $?
