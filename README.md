@@ -44,14 +44,15 @@ $ sudo systemctl daemon-reload
 
 #### Debian
 
-Add `pam_exec.so` line after `pam_cap.so` line in `/etc/pam.d/common-auth`
-as the following:
+Add `pam_exec.so` line after `# end of pam-auth-update config` line in
+`/etc/pam.d/common-auth` as the following:
 
 ```
 ...
 auth	optional			pam_cap.so
+# and here are more per-package modules (the "Additional" block)
+# end of pam-auth-update config
 auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
-...
 ```
 
 #### RHEL, CentOS
