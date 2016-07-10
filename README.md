@@ -32,7 +32,7 @@ Requirements
 Usage
 ----------------------------------------------------------------------
 
-### Install files
+### Install files and enable service
 
 ```console
 $ sudo install -m 0755 crypthome-{pam,mount,umount} /usr/local/sbin/
