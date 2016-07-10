@@ -14,7 +14,7 @@ What's this?
     * Open a LUKS encrypted volume for the user with the password
       in the keyring.
     * Revoke the password in the keyring.
-    * Mount the opened LUKS volume to the user's home directory.
+    * Mount the opened LUKS volume at the user's home directory.
   * At user logout:
     * Unmount the user's home directory.
     * Close the LUKS volume.
