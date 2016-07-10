@@ -133,6 +133,7 @@ TODO
   * Support changing password
   * More logging
   * Suspend and Resume the LUKS volume when screen lock and unlock
+  * Create a LUKS encrypted volume and a home directory if not exist at login
 
 References
 ----------------------------------------------------------------------
