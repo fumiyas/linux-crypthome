@@ -12,7 +12,7 @@ export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
 uid="$1"; shift
 
 pwent=$(getent passwd "$uid") || exit $?
-name=$(echo "$pwent" |sed 's/:.*$//')
+name="${pwent%%:*}"
 home=$(echo "$pwent" |sed 's/^.*:\([^:]*\):[^:]*$/\1/')
 [ -n "$name" ] && [ -n "$home" ] || exit $?
 key=$(keyctl request user "user:$uid") || exit $?
