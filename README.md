@@ -62,6 +62,18 @@ Replace all `auth` type lines in `/etc/pam.d/system-auth` and/or
 ```
 ...
 auth	required			pam_env.so
+auth	[success=1 default=ignore]	pam_unix.so nullok try_first_pass
+auth	requisite			pam_deny.so
+auth	required			pam_permit.so
+auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
+...
+```
+
+If you are using `pam_sss.so` or another module for authentication:
+
+```
+...
+auth	required			pam_env.so
 auth	[success=2 default=ignore]	pam_unix.so nullok try_first_pass
 auth	[success=1 default=ignore]	pam_sss.so use_first_pass
 auth	requisite			pam_deny.so
