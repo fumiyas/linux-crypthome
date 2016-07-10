@@ -29,8 +29,48 @@ Requirements
     * lvm2
   * LUKS volumes for each user that are encrypted with user's login password
 
-How to create an encrypted user's home for Linux-CryptHome
+Usage
 ----------------------------------------------------------------------
+
+### Install files
+
+```console
+$ sudo install -m 0755 crypthome-{pam,mount,umount} /usr/local/sbin/
+$ sudo install -m 0644 crypthome@.service /etc/systemd/system/
+$ sudo systemctl daemon-reload
+```
+
+### Configure PAM
+
+#### Debian
+
+Add `pam_exec.so` line after `pam_cap.so` line in `/etc/pam.d/common-auth`
+as the following:
+
+```
+...
+auth	optional			pam_cap.so
+auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
+...
+```
+
+#### RHEL, CentOS
+
+Replace all `auth` type lines in `/etc/pam.d/system-auth` and/or
+`/etc/pam.d/password-auth` as the following:
+
+```
+...
+auth	required			pam_env.so
+auth	[success=2 default=ignore]	pam_unix.so nullok try_first_pass
+auth	[success=1 default=ignore]	pam_sss.so use_first_pass
+auth	requisite			pam_deny.so
+auth	required			pam_permit.so
+auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
+...
+```
+
+### Create an encrypted user's home for Linux-CryptHome
 
   1. Create an LVM volume with named `crypthome.<username>`.
   2. Initializes a LUKS volume in the created LVM volume and sets
