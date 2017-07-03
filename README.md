@@ -1,7 +1,7 @@
 Linux-CryptHome: Mount an encrypted user's home at login
 ======================================================================
 
-  * Copyright (c) 2016 SATOH Fumiyasu @ OSS Technology Corp., Japan
+  * Copyright (c) 2016-2017 SATOH Fumiyasu @ OSS Technology Corp., Japan
   * License: GPLv3
   * URL: <https://GitHub.com/fumiyas/linux-crypthome>
   * Author's home: <https://fumiyas.github.io/>

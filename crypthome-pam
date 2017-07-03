@@ -1,7 +1,7 @@
 #!/bin/sh
 ##
 ## Linux-CryptHome: Mount an encrypted user's home directory at login
-## Copyright (c) 2016 SATOH Fumiyasu @ OSS Technology Corp., Japan
+## Copyright (c) 2016-2017 SATOH Fumiyasu @ OSS Technology Corp., Japan
 ##
 ## License: GNU General Public License version 3
 ##
