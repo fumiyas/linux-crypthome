@@ -15,8 +15,14 @@ fi
 
 uid=$(id -u "$PAM_USER") || exit $?
 
-keyctl padd user "user:$uid" @u || exit $?
+key_name="${CRYPTHOME_KEY_NAME:-crypthome:$uid}"
+key_ring="${CRYPTHOME_KEY_RING:-@u}"
+
+keyctl padd user "$key_name" "$key_ring" || exit $?
+if [ x"$key_ring" = x"@s" ]; then
+  "${0%/*}/crypthome-mount" "$uid" || exit $?
+fi
+
 systemctl start "crypthome@$uid.service" || exit $?
 
 exit 0
-
