@@ -119,7 +119,8 @@ Enter passphrase for /dev/VolGroup/crypthome.alice: ********
 ...snipped...
 # mount /dev/mapper/decrypthome.alice /mnt
 # cp -a /etc/skel/. /mnt/
-# chown -hR alice: /mnt/
+# chown -hR alice: /mnt
+# chmod 0750 /mnt
 # umount /mnt
 # cryptsetup close decrypthome.alice
 ```
