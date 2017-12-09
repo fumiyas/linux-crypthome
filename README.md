@@ -126,6 +126,11 @@ Enter passphrase for /dev/VolGroup/crypthome.alice: ********
 # cryptsetup close decrypthome.alice
 ```
 
+Limitations
+----------------------------------------------------------------------
+
+  * Does NOT work on `su - alice`
+
 TODO
 ----------------------------------------------------------------------
 
