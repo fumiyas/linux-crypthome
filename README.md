@@ -117,11 +117,12 @@ Hash spec:      sha256
 Enter passphrase for /dev/VolGroup/crypthome.alice: ********
 # mkfs -t xfs /dev/mapper/decrypthome.alice
 ...snipped...
-# mount /dev/mapper/decrypthome.alice /mnt
-# cp -a /etc/skel/. /mnt/
-# chown -hR alice: /mnt
-# chmod 0750 /mnt
-# umount /mnt
+# mkdir -p -m 0755 ~alice
+# mount /dev/mapper/decrypthome.alice ~alice
+# cp -a /etc/skel/. ~alice/
+# chown -hR alice: ~alice
+# chmod 0750 ~alice
+# umount ~alice
 # cryptsetup close decrypthome.alice
 ```
 
