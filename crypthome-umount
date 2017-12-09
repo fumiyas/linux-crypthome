@@ -13,11 +13,11 @@ uid="$1"
 
 pwent=$(getent passwd "$uid") || exit $?
 home=$(echo "$pwent" |sed 's/^.*:\([^:]*\):[^:]*$/\1/')
+[ -n "$home" ] || exit $?
 device=$(awk -v home="$home" '$2==home {print $1}' /proc/mounts)
-[ -n "$home" ] && [ -n "$device" ] || exit $?
+[ -n "$device" ] || exit 0
 
 umount "$home" || exit $?
 cryptsetup close "$device" || exit $?
 
 exit 0
-
