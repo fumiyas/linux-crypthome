@@ -57,16 +57,11 @@ auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
 
 #### RHEL / CentOS
 
-Replace all `auth` type lines in `/etc/pam.d/system-auth` and/or
-`/etc/pam.d/password-auth` as the following:
+Add `pam_exec.so` line into `/etc/pam.d/postlogin` as the following:
 
 ```
 ...
-auth	required			pam_env.so
-auth	[success=1 default=ignore]	pam_unix.so nullok try_first_pass
-auth	requisite			pam_deny.so
-auth	required			pam_permit.so
-auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
+auth        optional      pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
 ...
 ```
 
