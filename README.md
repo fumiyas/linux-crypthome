@@ -137,4 +137,5 @@ References
 
   * Dm-crypt/Mounting at login - ArchWiki
     * https://wiki.archlinux.org/index.php/Dm-crypt/Mounting_at_login
-
+  * Dm-crypt/ログイン時にマウント - ArchWiki
+    * https://wiki.archlinuxjp.org/index.php/Dm-crypt/%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E6%99%82%E3%81%AB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88
