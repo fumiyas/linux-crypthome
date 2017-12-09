@@ -42,7 +42,7 @@ $ sudo systemctl daemon-reload
 
 ### Configure PAM
 
-#### Debian
+#### Debian / Ubuntu
 
 Add `pam_exec.so` line after `# end of pam-auth-update config` line in
 `/etc/pam.d/common-auth` as the following:
@@ -55,7 +55,7 @@ auth	optional			pam_cap.so
 auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
 ```
 
-#### RHEL, CentOS
+#### RHEL / CentOS
 
 Replace all `auth` type lines in `/etc/pam.d/system-auth` and/or
 `/etc/pam.d/password-auth` as the following:
