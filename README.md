@@ -36,7 +36,7 @@ Usage
 
 ```console
 $ sudo install -m 0755 crypthome-{pam,mount,umount} /usr/local/sbin/
-$ sudo install -m 0644 crypthome@.service /etc/systemd/system/
+$ sudo install -m 0644 crypthome@.service /lib/systemd/system/
 $ sudo systemctl daemon-reload
 ```
 
