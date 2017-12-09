@@ -112,31 +112,15 @@ Version:        1
 Cipher name:    aes
 Cipher mode:    xts-plain64
 Hash spec:      sha256
-Payload offset: 4096
-MK bits:        256
-MK XigXst:      XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX
-MK sXlt:        XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX
-                XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX
-MK itXrXtions:  XXXXXX
-UUIX:           XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-
-Key Slot 0: ENABLED
-        ItXrXtions:             XXXXXXX
-        SXlt:                   XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX
-                                XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX
-        Key material offset:    8
-        AF stripes:             4000
-Key Slot 1: DISABLED
-Key Slot 2: DISABLED
-Key Slot 3: DISABLED
-Key Slot 4: DISABLED
-Key Slot 5: DISABLED
-Key Slot 6: DISABLED
-Key Slot 7: DISABLED
+...snipped...
 # cryptsetup open /dev/VolGroup/crypthome.alice decrypthome.alice
 Enter passphrase for /dev/VolGroup/crypthome.alice: ********
-# mkfs -t ext4 /dev/mapper/decrypthome.alice
-...
+# mkfs -t xfs /dev/mapper/decrypthome.alice
+...snipped...
+# mount /dev/mapper/decrypthome.alice /mnt
+# cp -a /etc/skel/. /mnt/
+# chown -hR alice: /mnt/
+# umount /mnt
 # cryptsetup close decrypthome.alice
 ```
 
