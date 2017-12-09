@@ -9,6 +9,17 @@
 set -u
 export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
 
+atexit() {
+  rc="$?"
+  [ -n "${key_id+set}" ] && keyctl revoke "$key_id"
+  exit "$rc"
+}
+
+unset key_id
+trap atexit EXIT
+
+## ======================================================================
+
 uid="$1"; shift
 
 key_name="${CRYPTHOME_KEY_NAME:-crypthome:$uid}"
@@ -36,7 +47,6 @@ if cryptsetup status "$device_decrypted_name" >/dev/null 2>&1; then
 fi
 
 key_id=$(keyctl request user "$key_name") || exit $?
-trap 'ret="$?"; keyctl revoke "$key_id"; exit "$ret"' EXIT
 
 keyctl \
   pipe \
