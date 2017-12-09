@@ -37,12 +37,16 @@ device_crypted=$(
     '$1==name {print $2}' \
   ;
 )
-[ -n "$device_crypted" ] || exit 0
+if [ -z "$device_crypted" ]; then
+  ## No crypted home found
+  exit 0
+fi
 
 device_decrypted_name="decrypthome.$name.$uid.$(basename "$(realpath "$device_crypted")")"
 device_decrypted="/dev/mapper/$device_decrypted_name"
 
 if cryptsetup status "$device_decrypted_name" >/dev/null 2>&1; then
+  ## Crypted home already opened (decrypted)
   exit 0
 fi
 
