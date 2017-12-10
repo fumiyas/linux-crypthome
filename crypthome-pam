@@ -18,11 +18,21 @@ uid=$(id -u "$PAM_USER") || exit $?
 key_name="${CRYPTHOME_KEY_NAME:-crypthome:$uid}"
 key_ring="${CRYPTHOME_KEY_RING:-@u}"
 
-keyctl padd user "$key_name" "$key_ring" || exit $?
-if [ x"$key_ring" = x"@s" ]; then
-  "${0%/*}/crypthome-mount" "$uid" || exit $?
-fi
-
-systemctl start "crypthome@$uid.service" || exit $?
+case "$PAM_TYPE" in
+auth)
+  keyctl padd user "$key_name" "$key_ring" || exit $?
+  ## FIXME: Set key expiry
+  if [ x"$key_ring" = x"@s" ]; then
+    "${0%/*}/crypthome-mount" "$uid" || exit $?
+  fi
+  systemctl enable "crypthome@$uid.service" || exit $?
+  ;;
+#open_session)
+#  systemctl start "crypthome@$uid.service" || exit $?
+#  ;;
+#close_session)
+#  # Do NOT systemctl stop "crypthome@$uid.service" || exit $?
+#  ;;
+esac
 
 exit 0
