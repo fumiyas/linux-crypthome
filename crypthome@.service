@@ -1,5 +1,5 @@
 [Unit]
-Description=Encrypted Home Directory for User (UID %I)
+Description=Mount / Unmount Encrypted Home Directory for UID %I
 DefaultDependencies=no
 Conflicts=umount.target
 IgnoreOnIsolate=true
