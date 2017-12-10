@@ -119,6 +119,7 @@ TODO
   * More logging
   * Suspend and Resume the LUKS volume when screen lock and unlock
   * Create a LUKS encrypted volume and a home directory if not exist at login
+  * How to sesize a LUKS encrypted volume?
 
 References
 ----------------------------------------------------------------------
