@@ -14,6 +14,6 @@ ExecStart=/usr/local/sbin/crypthome-mount %i
 ExecStop=/usr/local/sbin/crypthome-umount %i
 
 [Install]
-RequiredBy=user-%i.slice
+WantedBy=user-%i.slice
 
 ## vim:filetype=systemd
