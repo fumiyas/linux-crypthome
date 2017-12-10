@@ -11,7 +11,7 @@ export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
 
 atexit() {
   rc="$?"
-  [ -n "${key_id+set}" ] && keyctl revoke "$key_id"
+  [ -n "${key_id:+set}" ] && keyctl revoke "$key_id"
   exit "$rc"
 }
 
