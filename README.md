@@ -48,8 +48,7 @@ Add `pam_exec.so` line after `# end of pam-auth-update config` line in
 `/etc/pam.d/common-auth` as the following:
 
 ```
-...
-auth	optional			pam_cap.so
+...snipped...
 # and here are more per-package modules (the "Additional" block)
 # end of pam-auth-update config
 auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
@@ -60,22 +59,9 @@ auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
 Add `pam_exec.so` line into `/etc/pam.d/postlogin` as the following:
 
 ```
-...
+...snipped...
 auth        optional      pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
-...
-```
-
-If you are using `pam_sss.so` or another module for authentication:
-
-```
-...
-auth	required			pam_env.so
-auth	[success=2 default=ignore]	pam_unix.so nullok try_first_pass
-auth	[success=1 default=ignore]	pam_sss.so use_first_pass
-auth	requisite			pam_deny.so
-auth	required			pam_permit.so
-auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
-...
+...snipped...
 ```
 
 ### Create an encrypted user's home for Linux-CryptHome
