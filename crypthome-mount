@@ -55,6 +55,7 @@ key_id=$(keyctl request user "$key_name") || exit $?
 keyctl \
   pipe \
   "$key_id" \
+|sed 's/\x00$//' \
 |cryptsetup \
   open \
   "$device_crypted" \
