@@ -51,7 +51,7 @@ Add `pam_exec.so` line after `# end of pam-auth-update config` line in
 ...snipped...
 # and here are more per-package modules (the "Additional" block)
 # end of pam-auth-update config
-auth	optional			pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
+auth optional pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
 ```
 
 #### RHEL / CentOS
@@ -60,7 +60,7 @@ Add `pam_exec.so` line into `/etc/pam.d/postlogin` as the following:
 
 ```
 ...snipped...
-auth        optional      pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
+auth optional pam_exec.so expose_authtok /usr/local/sbin/crypthome-pam
 ...snipped...
 ```
 
