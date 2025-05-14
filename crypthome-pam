@@ -9,30 +9,132 @@
 set -u
 export PATH="/usr/bin:/usr/sbin"
 
-if [ x"$(id -u)" != x"0" ]; then
+perr() {
+  echo "$0: ERROR: $1" 1>&2
+}
+
+pdie() {
+  perr "$1"
+  exit "${2-1}"
+}
+
+uid_min="${CRYPTHOME_UID_MIN:-1000}"
+home_root="/home"
+home_name_prefix="${CRYPTHOME_HOME_NAME_PREFIX:-crypthome.}"
+
+## ======================================================================
+
+if [ "$(id -u)" != "0" ]; then
+  pdie "Must be run by root"
+fi
+if [ "$PAM_TYPE" != "auth" ]; then
+  pdie "Must be run in PAM auth type"
+fi
+
+name="$PAM_USER"
+home_lv_name="$home_name_prefix$name"
+
+home_lv_entry=$(
+  lvs \
+    --noheadings \
+    --options lv_name,lv_path \
+  |awk \
+    -v home_lv_name="$home_lv_name" \
+    '$1==home_lv_name { print $2 }' \
+  ;
+)
+if [ -z "$home_lv_entry" ]; then
+  ## No crypted home found
   exit 0
 fi
 
-uid=$(id -u "$PAM_USER") || exit $?
+home_crypted_dev="${home_lv_entry#* }"
+home_crypted_dev_unit="$(systemd-escape --path "$home_crypted_dev").device"
 
-key_name="${CRYPTHOME_KEY_NAME:-crypthome:$uid}"
-key_ring="${CRYPTHOME_KEY_RING:-@u}"
+pwent=$(getent passwd "$name") || pdie "Failed to get user entry: $name" $?
+pwent="${pwent#*:}"  # Remove name part
+pwent="${pwent#*:}"  # Remove password part
+uid="${pwent%%:*}"
+if [ "$uid" -lt "$uid_min" ]; then
+  pdie "UID less than $uid_min: $uid"
+fi
 
-case "$PAM_TYPE" in
-auth)
-  keyctl padd user "$key_name" "$key_ring" || exit $?
-  ## FIXME: Set key expiry
-  if [ x"$key_ring" = x"@s" ]; then
-    "${0%/*}/crypthome-mount" "$uid" || exit $?
-  fi
-  systemctl enable "crypthome@$uid.service" || exit $?
-  ;;
-#open_session)
-#  systemctl start "crypthome@$uid.service" || exit $?
-#  ;;
-#close_session)
-#  # Do NOT systemctl stop "crypthome@$uid.service" || exit $?
-#  ;;
-esac
+pwent="${pwent%:*}"  # Remove shell part
+home="${pwent##*:}"
+if [ -z "$home" ]; then
+  pdie "User has no home diretory: $name"
+fi
+if [ ! -d "$home" ]; then
+  pdie "No such home directory to mount: $home"
+fi
+
+home_relative="${home#$home_root/}"
+if [ "$home_relative" = "$home" ]; then
+  pdie "Home directory not in $home_root: $home"
+fi
+
+home_decrypted_name="$home_name_prefix$name"
+home_decrypted_dev="/dev/mapper/$home_decrypted_name"
+home_decrypted_dev_unit="$(systemd-escape --path "$home_decrypted_dev").device"
+
+if ! cryptsetup status "$home_decrypted_name" >/dev/null 2>&1; then
+  cryptsetup \
+    open \
+    "$home_crypted_dev" \
+    "$home_decrypted_name" \
+    --key-file - \
+  || pdie "Failed to open crypted home device: $home_crypted" $? \
+  ;
+fi
+
+home_mount_unit="$(systemd-escape --path "$home").mount"
+home_mount_unit_file="/etc/systemd/system/$home_mount_unit"
+if [ ! -s "$home_mount_unit_file" ]; then
+  cat <<EOF >"$home_mount_unit_file"
+[Unit]
+Requires=user@$uid.service
+Before=user@$uid.service
+
+[Mount]
+Where=$home
+What=$home_decrypted_dev
+
+[Install]
+RequiredBy=user@$uid.service
+EOF
+  systemctl daemon-reload || exit $?
+  systemctl enable "$home_mount_unit" \
+  || pdie "Failed to enable service: $home_mount_unit" $? \
+  ;
+fi
+
+home_unmount_unit="crypthome-$name.service"
+home_unmount_unit_file="/etc/systemd/system/$home_unmount_unit"
+if [ ! -s "$home_unmount_unit_file" ]; then
+  cat <<EOF >"$home_unmount_unit_file"
+[Unit]
+DefaultDependencies=no
+BindsTo=$home_crypted_dev_unit
+After=$home_crypted_dev_unit
+BindsTo=$home_decrypted_dev_unit
+Requires=$home_mount_unit
+Before=$home_mount_unit
+Conflicts=umount.target
+Before=umount.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutSec=0
+ExecStop=cryptsetup close $home_decrypted_name
+
+[Install]
+RequiredBy=$home_decrypted_dev_unit
+EOF
+  systemctl daemon-reload || exit $?
+  systemctl enable "$home_unmount_unit" \
+  || pdie "Failed to enable service: $home_umount_unit" $? \
+  ;
+fi
 
 exit 0

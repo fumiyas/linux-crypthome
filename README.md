@@ -11,10 +11,11 @@ What's this?
 
 * At user login:
     * Save an entered valid login password to a keyring.
-    * Open a LUKS encrypted volume for the user with the password
-      in the keyring.
-    * Revoke the password in the keyring.
-    * Mount the opened LUKS volume at the user's home directory.
+    * Open a LUKS encrypted volume for the user with the login password.
+    * Create `home-<username>.mount` systemd unit if not exists.
+    * Enable `home-<username>.mount` systemd unit.
+    * Create `crypthome-<username>.service` systemd unit if not exists.
+    * Enable `crypthome-<username>.service` systemd unit.
 * At user logout:
     * Unmount the user's home directory.
     * Close the LUKS volume.
@@ -24,7 +25,6 @@ Requirements
 
 * Linux environment with LUKS support and:
     * systemd
-    * keyutils
     * cryptsetup
     * lvm2
 * LUKS volumes for each user that are encrypted with user's login password
@@ -32,12 +32,10 @@ Requirements
 Usage
 ----------------------------------------------------------------------
 
-### Install files and enable service
+### Install files
 
 ```console
-$ sudo install -m 0755 crypthome-{pam,mount,umount} /usr/local/sbin/
-$ sudo install -m 0644 crypthome@.service /lib/systemd/system/
-$ sudo systemctl daemon-reload
+$ sudo install -m 0755 crypthome-pam /usr/local/sbin/
 ```
 
 ### Configure PAM
@@ -128,3 +126,5 @@ References
     * https://wiki.archlinux.org/index.php/Dm-crypt/Mounting_at_login
 * Dm-crypt/ログイン時にマウント - ArchWiki
     * https://wiki.archlinuxjp.org/index.php/Dm-crypt/%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E6%99%82%E3%81%AB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88
+* Linuxで"luks"を使ってホームフォルダを暗号化する方法 - みくにまるのブログ
+    * https://mikunimaru.hatenablog.jp/entry/2021/06/05/083655#google_vignette
