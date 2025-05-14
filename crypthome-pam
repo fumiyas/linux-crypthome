@@ -7,7 +7,7 @@
 ##
 
 set -u
-export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
+export PATH="/usr/bin:/usr/sbin"
 
 if [ x"$(id -u)" != x"0" ]; then
   exit 0
