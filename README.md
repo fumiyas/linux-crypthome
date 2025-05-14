@@ -1,33 +1,33 @@
 Linux-CryptHome: Mount an encrypted user's home at login
 ======================================================================
 
-  * Copyright (c) 2016-2017 SATOH Fumiyasu @ OSS Technology Corp., Japan
-  * License: GPLv3
-  * URL: <https://GitHub.com/fumiyas/linux-crypthome>
-  * Author's home: <https://fumiyas.github.io/>
+* SPDX-FileCopyrightText: 2016-2025 SATOH Fumiyasu @ OSSTech Corp., Japan
+* SPDX-License-Identifier: GPL-3.0-or-later
+* URL: <https://GitHub.com/fumiyas/linux-crypthome>
+* Author's home: <https://fumiyas.github.io/>
 
 What's this?
 ----------------------------------------------------------------------
 
-  * At user login:
+* At user login:
     * Save an entered valid login password to a keyring.
     * Open a LUKS encrypted volume for the user with the password
       in the keyring.
     * Revoke the password in the keyring.
     * Mount the opened LUKS volume at the user's home directory.
-  * At user logout:
+* At user logout:
     * Unmount the user's home directory.
     * Close the LUKS volume.
 
 Requirements
 ----------------------------------------------------------------------
 
-  * Linux environment with LUKS support and:
+* Linux environment with LUKS support and:
     * systemd
     * keyutils
     * cryptsetup
     * lvm2
-  * LUKS volumes for each user that are encrypted with user's login password
+* LUKS volumes for each user that are encrypted with user's login password
 
 Usage
 ----------------------------------------------------------------------
@@ -110,21 +110,21 @@ Enter passphrase for /dev/VolGroup/crypthome.alice: ********
 Limitations
 ----------------------------------------------------------------------
 
-  * Does NOT work on `su - alice`
+* Does NOT work on `su - alice`
 
 TODO
 ----------------------------------------------------------------------
 
-  * Support changing password
-  * More logging
-  * Suspend and Resume the LUKS volume when screen lock and unlock
-  * Create a LUKS encrypted volume and a home directory if not exist at login
-  * How to sesize a LUKS encrypted volume?
+* Support changing password
+* More logging
+* Suspend and Resume the LUKS volume when screen lock and unlock
+* Create a LUKS encrypted volume and a home directory if not exist at login
+* How to sesize a LUKS encrypted volume?
 
 References
 ----------------------------------------------------------------------
 
-  * Dm-crypt/Mounting at login - ArchWiki
+* Dm-crypt/Mounting at login - ArchWiki
     * https://wiki.archlinux.org/index.php/Dm-crypt/Mounting_at_login
-  * Dm-crypt/ログイン時にマウント - ArchWiki
+* Dm-crypt/ログイン時にマウント - ArchWiki
     * https://wiki.archlinuxjp.org/index.php/Dm-crypt/%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E6%99%82%E3%81%AB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88
