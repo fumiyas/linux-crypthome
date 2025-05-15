@@ -31,6 +31,8 @@ if [ "$PAM_TYPE" != "auth" ]; then
   pdie "Must be run in PAM auth type"
 fi
 
+## ----------------------------------------------------------------------
+
 name="$PAM_USER"
 home_lv_name="$home_name_prefix$name"
 
@@ -50,6 +52,8 @@ fi
 
 home_crypted_dev="${home_lv_entry#* }"
 home_crypted_dev_unit="$(systemd-escape --path "$home_crypted_dev").device"
+
+## ----------------------------------------------------------------------
 
 pwent=$(getent passwd "$name") || pdie "Failed to get user entry: $name" $?
 pwent="${pwent#*:}"  # Remove name part
@@ -73,6 +77,8 @@ if [ "$home_relative" = "$home" ]; then
   pdie "Home directory not in $home_root: $home"
 fi
 
+## ----------------------------------------------------------------------
+
 home_decrypted_name="$home_name_prefix$name"
 home_decrypted_dev="/dev/mapper/$home_decrypted_name"
 home_decrypted_dev_unit="$(systemd-escape --path "$home_decrypted_dev").device"
@@ -87,8 +93,11 @@ if ! cryptsetup status "$home_decrypted_name" >/dev/null 2>&1; then
   ;
 fi
 
+## ----------------------------------------------------------------------
+
 home_mount_unit="$(systemd-escape --path "$home").mount"
 home_mount_unit_file="/etc/systemd/system/$home_mount_unit"
+
 if [ ! -s "$home_mount_unit_file" ]; then
   cat <<EOF >"$home_mount_unit_file"
 [Unit]
@@ -108,8 +117,11 @@ EOF
   ;
 fi
 
+## ----------------------------------------------------------------------
+
 home_unmount_unit="crypthome-$name.service"
 home_unmount_unit_file="/etc/systemd/system/$home_unmount_unit"
+
 if [ ! -s "$home_unmount_unit_file" ]; then
   cat <<EOF >"$home_unmount_unit_file"
 [Unit]
@@ -136,5 +148,7 @@ EOF
   || pdie "Failed to enable service: $home_umount_unit" $? \
   ;
 fi
+
+## ======================================================================
 
 exit 0
