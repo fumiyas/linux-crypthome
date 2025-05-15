@@ -72,7 +72,7 @@ if [ ! -d "$home" ]; then
   pdie "No such home directory to mount: $home"
 fi
 
-home_relative="${home#$home_root/}"
+home_relative="${home#"$home_root"/}"
 if [ "$home_relative" = "$home" ]; then
   pdie "Home directory not in $home_root: $home"
 fi
@@ -89,7 +89,7 @@ if ! cryptsetup status "$home_decrypted_name" >/dev/null 2>&1; then
     "$home_crypted_dev" \
     "$home_decrypted_name" \
     --key-file - \
-  || pdie "Failed to open crypted home device: $home_crypted" $? \
+  || pdie "Failed to open crypted home device: $home_crypted_dev" $? \
   ;
 fi
 
@@ -119,11 +119,11 @@ fi
 
 ## ----------------------------------------------------------------------
 
-home_unmount_unit="crypthome-$name.service"
-home_unmount_unit_file="/etc/systemd/system/$home_unmount_unit"
+home_umount_unit="crypthome-$name.service"
+home_umount_unit_file="/etc/systemd/system/$home_umount_unit"
 
-if [ ! -s "$home_unmount_unit_file" ]; then
-  cat <<EOF >"$home_unmount_unit_file"
+if [ ! -s "$home_umount_unit_file" ]; then
+  cat <<EOF >"$home_umount_unit_file"
 [Unit]
 DefaultDependencies=no
 BindsTo=$home_crypted_dev_unit
@@ -144,7 +144,7 @@ ExecStop=cryptsetup close $home_decrypted_name
 RequiredBy=$home_decrypted_dev_unit
 EOF
   systemctl daemon-reload || exit $?
-  systemctl enable "$home_unmount_unit" \
+  systemctl enable "$home_umount_unit" \
   || pdie "Failed to enable service: $home_umount_unit" $? \
   ;
 fi
