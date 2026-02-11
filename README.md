@@ -82,42 +82,39 @@ WARNING!
 This will overwrite data on /dev/VolGroup/crypthome.alice irrevocably.
 
 Are you sure? (Type uppercase yes): YES
-Enter passphrase: ********
+Enter passphrase for /dev/VolGroup/crypthome.alice: ********
 Verify passphrase: ********
 # cryptsetup luksDump /dev/VolGroup/crypthome.alice
-LUKS header information for /dev/VolGroup/crypthome.alice
-
-Version:        1
-Cipher name:    aes
-Cipher mode:    xts-plain64
-Hash spec:      sha256
+LUKS header information
+Version:        2
+Epoch:          3
 ...snipped...
-# cryptsetup open /dev/VolGroup/crypthome.alice decrypthome.alice
+# cryptsetup open /dev/VolGroup/crypthome.alice crypthome.alice
 Enter passphrase for /dev/VolGroup/crypthome.alice: ********
-# mkfs -t xfs /dev/mapper/decrypthome.alice
+# mkfs -t xfs /dev/mapper/crypthome.alice
 ...snipped...
 # mkdir -p -m 0755 ~alice
-# mount /dev/mapper/decrypthome.alice ~alice
+# mount /dev/mapper/crypthome.alice ~alice
 # cp -a /etc/skel/. ~alice/
 # chown -R alice: ~alice
 # chmod 0750 ~alice
 # umount ~alice
-# cryptsetup close decrypthome.alice
+# cryptsetup close crypthome.alice
 ```
 
 Limitations
 ----------------------------------------------------------------------
 
-* Does NOT work on `su - alice`
+* Does NOT work on `su - alice`.
 
 TODO
 ----------------------------------------------------------------------
 
-* Support changing password
-* More logging
-* Suspend and Resume the LUKS volume when screen lock and unlock
-* Create a LUKS encrypted volume and a home directory if not exist at login
-* How to sesize a LUKS encrypted volume?
+* Support changing password.
+* More logging.
+* Suspend and Resume the LUKS volume when screen lock and unlock.
+* Create a LUKS encrypted volume and a home directory if not exist at login.
+* How to resize a LUKS encrypted volume?
 
 References
 ----------------------------------------------------------------------
